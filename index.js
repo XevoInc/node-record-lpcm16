@@ -1,6 +1,7 @@
 'use strict'
 
 var spawn = require('child_process').spawn
+var fcntl = require('fs-ext').fcntl
 
 var cp // Recording process
 
@@ -68,6 +69,19 @@ exports.start = function (options) {
   }
   cp = spawn(cmd, cmdArgs, cmdOptions)
   var rec = cp.stdout
+
+  if (rec._handle && rec._handle.fd) {
+    // fd: file descriptor of cp.stdout. Heavyly depends on node internal implementation.
+    var fd = rec._handle.fd
+    try {
+      fcntl(fd, 'setpipesz', 8192) // set smaller pipe buffer size on Linux. 8192 = default rec buffer size
+      if (options.verbose) {
+        console.log('Set recording pipe buffer to %d bytes', fcntl(fd, 'getpipesz'))
+      }
+    } catch(e) {
+      // do nothing. fcntl(setpipesz) is only supported on Linux
+    }
+  }
 
   if (options.verbose) {
     console.log('Recording', options.channels, 'channels with sample rate',

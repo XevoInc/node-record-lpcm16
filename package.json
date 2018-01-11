@@ -3,7 +3,9 @@
   "version": "0.3.0",
   "description": "",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "fs-ext": "git+https://github.com/XevoInc/node-fs-ext.git#fcntl-setpipe-sz"
+  },
   "devDependencies": {},
   "scripts": {},
   "keywords": [
