@@ -59,6 +59,16 @@ exports.start = function (options) {
         cmdArgs.unshift('-D', options.device)
       }
       break
+    // Use parec for better latency. silence option is ignored.
+    case 'parec':
+      const cmd = 'parec'
+      const cmdArgs = [
+          '--rate=' + options.sampleRate,     // sample rate
+          '--channels=' + options.channels,   // channels
+          '--raw',                            // RAW audio type. parec can't output wav to stdout
+          '--format=s16le',                   // Sample format
+          '--latency=4096',
+      ]
   }
 
   // Spawn audio capture command
